@@ -13,12 +13,15 @@ export default function DemoReplicateModel() {
   );
   const [timeoutValue, setTimeoutValue] = useState("10000");
   const [loading, setLoading] = useState(false);
-  const [insta, setInsta] = useState('');
+  const [insta, setInsta] = useState("");
   const [showCaptions, setShowCaptions] = useState(false);
+  const [loadingCaptions, setLoadingCaptions] = useState(false);
+  const [userSuggestions, setUserSuggestions] = useState("");
 
   async function handleClickCall() {
     setResult("");
     setLoading(true);
+    setShowCaptions(false);
 
     const reader = new FileReader();
 
@@ -39,42 +42,46 @@ export default function DemoReplicateModel() {
     }
   }
 
-  function handleImageUpload(e) {
-    const file = e.target.files[0];
-    setImage(file);
-  }
-
-  async function handleClick(result) {
+  async function handleClickGenerateCaptions() {
     try {
+      setLoadingCaptions(true);
+
       const { message } = await llm.chat({
         messages: [
           {
-            role: 'user',
+            role: "user",
             content: `
-              Generate a few cool Instagram captions using the description:
+            Generate a few cool Instagram captions using the description:
               
-              ${result}
-              
-              Suggestions:
-              - [Main Suggestion]
-              - [Suggestion 1]
-              - [Suggestion 2]
-              - [Suggestion 3]
-              
-              Always use hyphens('-') while generating every suggestion 
-              Be creative and fun with your captions! and
-              Add hashtags: #hashtag1 #hashtag2 #hashtag3
-              Add emojies
-            `
-          }
-        ]
+            ${result},${userSuggestions}
+            
+            Suggestions:
+            - [Main Suggestion]
+            - [Suggestion 1]
+            - [Suggestion 2]
+            - [Suggestion 3]
+            
+            Always use hyphens('-') while generating every suggestion 
+            Be creative and fun with your captions! and
+            Add hashtags: #hashtag1 #hashtag2 #hashtag3
+            Add emojis
+            `,
+          },
+        ],
       });
-      console.log('Received message: ', message.content);
+
+      console.log("Received message: ", message.content);
       setInsta(message.content);
       setShowCaptions(true);
+      setLoadingCaptions(false);
     } catch (error) {
-      console.error('Something went wrong!', error);
+      console.error("Something went wrong!", error);
     }
+  }
+
+  function handleImageUpload(e) {
+    const file = e.target.files[0];
+    setImage(file);
   }
 
   return (
@@ -121,29 +128,51 @@ export default function DemoReplicateModel() {
         </button>
       </div>
       {result && (
-        <p style={{ textAlign: "center", fontWeight: "bold", marginTop: "20px" }}>
-          {result.slice(8,)}
-        </p>
+        <>
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              marginTop: "20px",
+            }}
+          >
+            {result.slice(8)}
+          </p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <textarea
+              rows="4"
+              cols="50"
+              placeholder="Enter your suggestions..."
+              value={userSuggestions}
+              onChange={(e) => setUserSuggestions(e.target.value)}
+            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+            <button
+              onClick={handleClickGenerateCaptions}
+              disabled={loading || loadingCaptions}
+            >
+              {loadingCaptions ? "Generating Captions..." : "Generate Image Captions"}
+            </button>
+          </div>
+        </>
       )}
-    {result && (
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <button onClick={() => handleClick(result)}>Generate Image captions</button>
-      </div>
-    )}
-    {showCaptions && (
-      <div style={{ marginTop: '20px' }}>
-        <p style={{ fontWeight: 'bold' }}>Suggested Captions:</p>
-        <ul style={{ paddingLeft: '40px' }}>
-          {insta.split('-').map((suggestion, index) => {
-            const trimmedSuggestion = suggestion.trim();
-            if (trimmedSuggestion && index !== 0) {
-              return <li key={index}>{trimmedSuggestion}</li>;
-            }
-            return null;
-          })}
-        </ul>
-      </div>
-    )}
-    </div>)
+      {showCaptions && (
+        <div style={{ marginTop: "20px" }}>
+          <p style={{ fontWeight: "bold" }}>Suggested Captions:</p>
+          <ul style={{ paddingLeft: "40px" }}>
+            {insta
+              .split("-")
+              .map((suggestion, index) => {
+                const trimmedSuggestion = suggestion.trim();
+                if (trimmedSuggestion && index !== 0) {
+                  return <li key={index}>{trimmedSuggestion}</li>;
+                }
+                return null;
+              })}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
-
