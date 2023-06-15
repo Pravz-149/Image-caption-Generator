@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div style={{ background: '#f5f5f5', padding: '20px' }}>
       <h1 style={{ textAlign: 'center', fontSize: '40px', fontWeight: 'bold', color: '#333', textTransform: 'uppercase' }}>
-        AI Caption Generator
+        Image Caption Generator
       </h1>
       <p style={{ textAlign: 'center', fontSize: '20px', color: '#777' }}>
         Let AI generate captions for your images!
