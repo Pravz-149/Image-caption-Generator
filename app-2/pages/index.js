@@ -9,11 +9,12 @@ export default function Home() {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
-
+  
     reader.onloadend = () => {
-      setImageData(URL.createObjectURL(file));
+      const base64Data = reader.result;
+      setImageData(base64Data);
     };
-
+  
     if (file) {
       reader.readAsDataURL(file);
     }
@@ -25,16 +26,24 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post('https://api.ocr.space/parse/image', {
+      const apiUrl = 'https://api.ocr.space/parse/image';
+      const apiKey = 'K88980484188957';
+      //const imageUrl = 'http://dl.a9t9.com/ocrbenchmark/eng.png';
+      const { data } = await axios.post(apiUrl, {
+        language: 'eng',
+        isOverlayRequired: 'false',
+        filetype: 'png',
+        base64Image: imageData,
+        iscreatesearchablepdf: 'false',
+        issearchablepdfhidetextlayer: 'false'
+      }, {
         headers: {
-          'Content-Type': 'application/json',
-        },
-        data: {
-          apikey: 'K88980484188957',
-          filetype: 'png',
-          base64Image: imageData,
-        },
-      });
+          apikey: apiKey,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+
+      console.log(data)
 
       const responseJson = data;
       if (
