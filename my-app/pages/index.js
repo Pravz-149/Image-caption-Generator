@@ -16,6 +16,7 @@ export default function DemoReplicateModel() {
   const [insta, setInsta] = useState("");
   const [showCaptions, setShowCaptions] = useState(false);
   const [loadingCaptions, setLoadingCaptions] = useState(false);
+  const [userSuggestions, setUserSuggestions] = useState("");
 
   async function handleClickCall() {
     setResult("");
@@ -41,7 +42,7 @@ export default function DemoReplicateModel() {
     }
   }
 
-  async function handleClickGenerateCaptions(result) {
+  async function handleClickGenerateCaptions() {
     try {
       setLoadingCaptions(true);
 
@@ -50,20 +51,20 @@ export default function DemoReplicateModel() {
           {
             role: "user",
             content: `
-              Generate a few cool Instagram captions using the description:
+            Generate a few cool Instagram captions using the description:
               
-              ${result}
-              
-              Suggestions:
-              - [Main Suggestion]
-              - [Suggestion 1]
-              - [Suggestion 2]
-              - [Suggestion 3]
-              
-              Always use hyphens('-') while generating every suggestion 
-              Be creative and fun with your captions! and
-              Add hashtags: #hashtag1 #hashtag2 #hashtag3
-              Add emojis
+            ${result},${userSuggestions}
+            
+            Suggestions:
+            - [Main Suggestion]
+            - [Suggestion 1]
+            - [Suggestion 2]
+            - [Suggestion 3]
+            
+            Always use hyphens('-') while generating every suggestion 
+            Be creative and fun with your captions! and
+            Add hashtags: #hashtag1 #hashtag2 #hashtag3
+            Add emojis
             `,
           },
         ],
@@ -137,9 +138,18 @@ export default function DemoReplicateModel() {
           >
             {result.slice(8)}
           </p>
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <textarea
+              rows="4"
+              cols="50"
+              placeholder="Enter your suggestions..."
+              value={userSuggestions}
+              onChange={(e) => setUserSuggestions(e.target.value)}
+            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
             <button
-              onClick={() => handleClickGenerateCaptions(result)}
+              onClick={handleClickGenerateCaptions}
               disabled={loading || loadingCaptions}
             >
               {loadingCaptions ? "Generating Captions..." : "Generate Image Captions"}
