@@ -74,9 +74,11 @@ export default function Home() {
           {
             role: 'user',
             content: `
-              Generate a brief summary and answer questions if any based on the description:
+              Answer the following question step by step:
 
               ${description}
+
+              
 
             `,
           },
