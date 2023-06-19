@@ -15,7 +15,7 @@ function Home() {
           <Link href="/visual-question-answering">Visual Question Answering</Link>
         </li>
         <li>
-          <Link href="/ocr-model">OCR Model</Link>
+          <Link href="/ocr-model">Image2TextQA</Link>
         </li>
       </ul>
     </div>
