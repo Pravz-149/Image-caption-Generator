@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useLLM from "usellm";
 
-export default function DemoReplicateModel() {
+function VisualQuestionAnswering() {
   const llm = useLLM({
     serviceUrl: "https://usellm.org/api/llm", // For testing only. Follow this guide to create your own service URL: https://usellm.org/docs/api-reference/create-llm-service
   });
@@ -104,3 +104,5 @@ export default function DemoReplicateModel() {
     </div>
   );
 }
+
+export default VisualQuestionAnswering;
